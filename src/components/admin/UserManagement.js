@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { 
-  Users, 
-  UserPlus, 
-  Edit, 
-  Trash2, 
-  Search, 
+import {
+  Users,
+  UserPlus,
+  Edit,
+  Trash2,
+  Search,
   Filter,
   Shield,
   User,
