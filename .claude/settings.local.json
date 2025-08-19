@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(npm uninstall:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npm audit:*)",
+      "Bash(rm:*)",
+      "Bash(npm start)",
+      "Bash(npx kill-port:*)",
+      "Bash(copy:*)",
+      "Bash(cp:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "acceptEdits"
+  }
+}
