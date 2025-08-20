@@ -16,6 +16,13 @@ import ContentManager from '../admin/ContentManager';
 
 const AdminPortal = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [isDocumentFullScreen, setIsDocumentFullScreen] = useState(false);
+  const [recentActivities, setRecentActivities] = useState([
+    { text: 'New member registration: Sarah Johnson', time: '2 hours ago', type: 'user' },
+    { text: 'Payment received: Unit 47 - March dues', time: '6 hours ago', type: 'payment' },
+    { text: 'System backup completed successfully', time: '1 day ago', type: 'system' },
+    { text: 'Board meeting scheduled: March 15th', time: '2 days ago', type: 'calendar' }
+  ]);
 
   const adminTabs = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -31,11 +38,16 @@ const AdminPortal = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <AdminDashboard />;
+        return <AdminDashboard recentActivities={recentActivities} />;
       case 'users':
         return <UserManagement />;
       case 'documents':
-        return <DocumentManagement />;
+        return <DocumentManagement 
+          isDocumentFullScreen={isDocumentFullScreen}
+          setIsDocumentFullScreen={setIsDocumentFullScreen}
+          recentActivities={recentActivities}
+          setRecentActivities={setRecentActivities}
+        />;
       case 'content':
         return <ContentManager />;
       case 'calendar':
@@ -47,7 +59,7 @@ const AdminPortal = () => {
       case 'settings':
         return <SystemSettings />;
       default:
-        return <AdminDashboard />;
+        return <AdminDashboard recentActivities={recentActivities} />;
     }
   };
 
@@ -59,13 +71,14 @@ const AdminPortal = () => {
       activeTab={activeTab}
       onTabChange={setActiveTab}
       userRole="admin"
+      isFullScreen={activeTab === 'documents' && isDocumentFullScreen}
     >
       {renderTabContent()}
     </PortalLayout>
   );
 };
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ recentActivities = [] }) => {
   const stats = [
     { 
       label: 'Total Members', 
@@ -172,13 +185,7 @@ const AdminDashboard = () => {
             Recent Activity
           </h3>
           <div className="space-y-4">
-            {[
-              { text: 'New member registration: Sarah Johnson', time: '2 hours ago', type: 'user' },
-              { text: 'Document uploaded: 2024 Budget Proposal', time: '4 hours ago', type: 'document' },
-              { text: 'Payment received: Unit 47 - March dues', time: '6 hours ago', type: 'payment' },
-              { text: 'System backup completed successfully', time: '1 day ago', type: 'system' },
-              { text: 'Board meeting scheduled: March 15th', time: '2 days ago', type: 'calendar' }
-            ].map((activity, index) => (
+            {recentActivities.map((activity, index) => (
               <div key={index} className="flex items-start gap-3 p-3 bg-gray-50/80 rounded-xl hover:bg-gray-100/80 transition-colors">
                 <div className={`w-2 h-2 rounded-full mt-2 ${
                   activity.type === 'user' ? 'bg-blue-500' :
