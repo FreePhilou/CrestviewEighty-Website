@@ -276,15 +276,8 @@ const DocumentManagement = ({ isDocumentFullScreen, setIsDocumentFullScreen, rec
   };
 
   const navigateBack = () => {
-    if (navigationStack.length > 0) {
-      const lastState = navigationStack[navigationStack.length - 1];
-      setNavigationStack(prev => prev.slice(0, -1));
-      setCurrentPanel(lastState.panel);
-      setCurrentFolder(lastState.folder);
-      if (lastState.panel === 'folders') {
-        setSidebarCollapsed(false);
-      }
-    }
+    // Always return to the main Document Library view - same as resetNavigation
+    resetNavigation();
   };
 
   // Handle mouse back/forward buttons
@@ -624,33 +617,21 @@ const DocumentManagement = ({ isDocumentFullScreen, setIsDocumentFullScreen, rec
               opacity: 1
             }}
             transition={{ type: "spring", damping: 30, stiffness: 400, duration: 0.3 }}
-            className="w-96 h-full bg-black/20 backdrop-blur-xl border-r border-white/10 flex flex-col z-10"
+            className="w-96 h-full bg-black/20 backdrop-blur-xl border-r border-white/10 flex flex-col z-10 cursor-pointer"
+            onClick={currentPanel === 'documents' ? navigateBack : undefined}
           >
             {/* Header */}
             <div className="p-6 border-b border-white/10">
               <div className="flex items-center justify-between mb-4">
                 <h1 className="text-xl font-bold text-white">Document Library</h1>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setShowCreateFolder(true)}
-                    className="flex items-center gap-2 px-3 py-2 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white rounded-lg transition-all duration-200 shadow-lg"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span className="text-sm font-medium">Create Folder</span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setShowUpload(true);
-                    }}
-                    className="flex items-center gap-2 px-3 py-2 h-10 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-lg transition-all duration-200 shadow-lg cursor-pointer select-none"
-                    style={{ pointerEvents: 'all' }}
-                  >
-                    <Upload className="w-4 h-4 pointer-events-none" />
-                    <span className="text-sm font-medium pointer-events-none">Upload</span>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCreateFolder(true)}
+                  className="flex items-center justify-center gap-2 px-3 py-2 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white rounded-lg transition-all duration-200 shadow-lg cursor-pointer"
+                >
+                  <Plus className="w-4 h-4 flex-shrink-0" />
+                  <span className="text-sm font-medium whitespace-nowrap">Create Folder</span>
+                </button>
               </div>
 
               {/* Search */}
@@ -767,12 +748,13 @@ const DocumentManagement = ({ isDocumentFullScreen, setIsDocumentFullScreen, rec
               opacity: currentPanel === 'documents' && currentFolder ? 1 : 0
             }}
             transition={{ type: "spring", damping: 30, stiffness: 400, duration: 0.3 }}
-            className="absolute top-0 left-0 w-96 h-full bg-black/20 backdrop-blur-xl border-r border-white/10 flex flex-col z-20"
+            className="absolute top-0 left-0 w-96 h-full bg-black/20 backdrop-blur-xl border-r border-white/10 flex flex-col z-20 cursor-pointer"
+            onClick={navigateBack}
           >
             {currentFolder && (
               <>
                 {/* Documents Panel Header */}
-                <div className="p-6 border-b border-white/10">
+                <div className="p-6 border-b border-white/10" onClick={(e) => e.stopPropagation()}>
                   <div 
                     className="flex items-center gap-3 mb-4 cursor-pointer hover:bg-white/5 rounded-lg p-2 -m-2 transition-all duration-200"
                     onClick={navigateBack}
@@ -804,7 +786,7 @@ const DocumentManagement = ({ isDocumentFullScreen, setIsDocumentFullScreen, rec
                 </div>
 
                 {/* Documents List */}
-                <div className="flex-1 overflow-y-auto p-4">
+                <div className="flex-1 overflow-y-auto p-4" onClick={(e) => e.stopPropagation()}>
                   {isLoading ? (
                     <div className="text-center py-12">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-4"></div>
@@ -819,7 +801,10 @@ const DocumentManagement = ({ isDocumentFullScreen, setIsDocumentFullScreen, rec
                         return (
                           <motion.button
                             key={doc.id}
-                            onClick={() => setSelectedDocument(doc)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedDocument(doc);
+                            }}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             transition={{ type: "spring", damping: 25, stiffness: 300 }}

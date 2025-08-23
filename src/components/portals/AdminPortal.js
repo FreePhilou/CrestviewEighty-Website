@@ -7,12 +7,14 @@ import {
   Calendar, 
   CreditCard,
   Bell,
-  Edit3
+  Edit3,
+  Building2
 } from 'lucide-react';
 import PortalLayout from './PortalLayout';
 import UserManagement from '../admin/UserManagement';
 import DocumentManagement from '../admin/DocumentManagement';
 import ContentManager from '../admin/ContentManager';
+import ServiceProviderManagement from '../admin/ServiceProviderManagement';
 
 const AdminPortal = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -28,6 +30,7 @@ const AdminPortal = () => {
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
     { id: 'users', label: 'User Management', icon: Users },
     { id: 'documents', label: 'Documents', icon: FileText },
+    { id: 'providers', label: 'Service Providers', icon: Building2 },
     { id: 'content', label: 'Content Manager', icon: Edit3 },
     { id: 'calendar', label: 'Events', icon: Calendar },
     { id: 'payments', label: 'Payments', icon: CreditCard },
@@ -48,6 +51,8 @@ const AdminPortal = () => {
           recentActivities={recentActivities}
           setRecentActivities={setRecentActivities}
         />;
+      case 'providers':
+        return <ServiceProviderManagement />;
       case 'content':
         return <ContentManager />;
       case 'calendar':
