@@ -48,6 +48,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentTier, setCurrentTier] = useState(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('authUser');
@@ -105,13 +106,37 @@ export const AuthProvider = ({ children }) => {
     return roleHierarchy[user.role] >= roleHierarchy[requiredRole];
   };
 
+  const getEffectiveRole = () => {
+    if (!user) return null;
+    return currentTier || user.role;
+  };
+
+  const switchTier = (tier) => {
+    if (user?.role === USER_ROLES.ADMIN) {
+      setCurrentTier(tier);
+    }
+  };
+
+  const resetTier = () => {
+    setCurrentTier(null);
+  };
+
+  const isAdminViewingOtherTier = () => {
+    return user?.role === USER_ROLES.ADMIN && currentTier && currentTier !== USER_ROLES.ADMIN;
+  };
+
   const value = {
     user,
     isAuthenticated,
     isLoading,
     login,
     logout,
-    hasRole
+    hasRole,
+    getEffectiveRole,
+    switchTier,
+    resetTier,
+    currentTier,
+    isAdminViewingOtherTier: isAdminViewingOtherTier()
   };
 
   return (
